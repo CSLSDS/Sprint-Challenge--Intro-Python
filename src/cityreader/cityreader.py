@@ -1,6 +1,12 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
-
+class City():
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+  def __str__(self):
+    return f'{self.name}, {self.lat}, {self.lon}'
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -17,11 +23,24 @@
 cities = []
 
 def cityreader(cities=[]):
-  # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the 
-  # `cities` list
-    
-    return cities
+  import csv
+  
+  # read from csv file, adding specified attributes per observation to a list;
+  #  skip first line, as it contains header information
+  with open('cities.csv') as csvfile:
+    citylist = csv.reader(csvfile, delimiter=',')
+    next(citylist)
+
+    # for each observation, instantiate an instance of the City() class;
+    #  append to 'cities' list
+    for observation in citylist:
+      entry = City(observation[0], float(observation[3]), float(observation[4]))
+      cities.append(entry)
+  
+  return cities
+
+
+
 
 cityreader(cities)
 
@@ -63,9 +82,30 @@ for c in cities:
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
+  
+  # define bounds based on conditions to determine which of each 
+  #  coordinate will be the upper and lower bounds
 
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
+  if lat1 < lat2:
+    lowerlat = lat1
+    upperlat = lat2
+  else:
+    lowerlat = lat2
+    upperlat = lat1
+
+  if lon1 < lon2:
+    lowerlon = lon1
+    upperlon = lon2
+  else:
+    lowerlon = lon2
+    upperlon = lon1
+  
+  # iterate over observations determining if coords meet conditions specified;
+  #  if True, append to 'within' list
+
+  for city in cities:
+    if (city.lat >= lowerlat and city.lat <= upperlat) and \
+      (city.lon >= lowerlon and city.lon <= upperlon):
+      within.append(city)
 
   return within
